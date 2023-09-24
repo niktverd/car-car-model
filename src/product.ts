@@ -31,13 +31,13 @@ export const products: Products = {
     },
     [ProductName.FreeUserGood]: {
         name: ProductName.FreeUserGood,
-        frequency: 6 / 12,
+        frequency: 3 / 12,
         profit: 8,
         cost: 20,
     },
     [ProductName.BasicUserGood]: {
         name: ProductName.BasicUserGood,
-        frequency: 6 / 12,
+        frequency: 4 / 12,
         profit: 4,
         cost: 20,
     },

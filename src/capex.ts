@@ -21,11 +21,11 @@ export const calculateTeam = ({report}: CalculateTeamArgs) => {
 
         const salesCount = report[key].salesCount;
 
-        const blueColors = Math.ceil(salesCount / MONTH_PLAN_FOR_BLUE_COLOR);
-        const whiteColors = Math.ceil(blueColors / LIMIT_FOR_WHITE_COLOR);
+        const blueColors = Math.floor(salesCount / MONTH_PLAN_FOR_BLUE_COLOR);
+        const whiteColors = Math.floor(blueColors / LIMIT_FOR_WHITE_COLOR);
         const blueColorsSalary = blueColors * BLUE_COLORS_SALARY;
         const whiteColorsSalary = whiteColors * WHITE_COLORS_SALARY;
-        console.log({key, salesCount, blueColors, whiteColors});
+
         report.team = {
             blueColors,
             whiteColors,

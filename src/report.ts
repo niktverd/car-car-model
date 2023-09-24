@@ -4,6 +4,10 @@ import { calculateCosts, correctUsers, updateUsers } from "./user";
 import { calculateTotal } from "./total";
 import { ProductName, updateProductSales } from "./product";
 import { calculateTeam } from "./capex";
+import { summary } from "./summary";
+import { flattenObject } from "./utils";
+import Papa from 'papaparse';
+import { writeFileSync, existsSync, mkdirSync } from "fs";
 
 export type PlanReport = {
     users: number;
@@ -12,6 +16,7 @@ export type PlanReport = {
     revenue: number;
     marketingCosts: number;
     salesCount: number;
+    balance: number;
     salesCountByProduct: Record<ProductName, number>;
     profitByProduct: Record<ProductName, number>;
     revenueByProduct: Record<ProductName, number>;
@@ -20,7 +25,7 @@ export type PlanReport = {
 export type TeamReport = Record<string, number>;
 
 export type Report = Record<PlanName, PlanReport> & {
-    total: PlanReport;
+    total: Omit<PlanReport, 'salesCountByProduct' | 'profitByProduct' | 'revenueByProduct'>;
     team: TeamReport;
 };
 
@@ -40,6 +45,7 @@ export const initialPlanReport: PlanReport  = {
     revenue: 0,
     salesCount: 0,
     marketingCosts: 0,
+    balance: 0,
     salesCountByProduct: initializeParameterByProduct(0),
     profitByProduct: initializeParameterByProduct(0),
     revenueByProduct: initializeParameterByProduct(0),
@@ -65,7 +71,7 @@ export const getInitialReport = (): Report => {
 
 export const getReport = (): Report => {
     const report = getInitialReport();
-
+    const periods = [];
     for (let month = 0; month < PERIODS; month++) {
         updateUsers({report, month});
         correctUsers({report, month});
@@ -73,9 +79,17 @@ export const getReport = (): Report => {
         updateProductSales({report, month});
         calculateTotal({report});
         calculateTeam({report});
-        console.log('\n\n===', month, '===\n', report);
+        summary({report});
+        periods.push({month, ...flattenObject(report)})
+    }
+
+    var csv = Papa.unparse(periods);
+
+    if (!existsSync('./.outputs')) {
+        mkdirSync('./.outputs');
     }
     
-
+    writeFileSync(`./.outputs/${new Date().toISOString()}.csv`, csv, {encoding: 'utf-8'});
     return report;
 };
+
