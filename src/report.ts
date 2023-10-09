@@ -69,7 +69,7 @@ export const getInitialReport = (): Report => {
     };
 };
 
-export const getReport = (): Report => {
+export const getReport = (): Record<string, number>[] => {
     const report = getInitialReport();
     const periods = [];
     for (let month = 0; month < PERIODS; month++) {
@@ -90,6 +90,6 @@ export const getReport = (): Report => {
     }
     
     writeFileSync(`./.outputs/${new Date().toISOString()}.csv`, csv, {encoding: 'utf-8'});
-    return report;
+    return periods;
 };
 

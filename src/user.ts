@@ -29,10 +29,16 @@ export const updateUsers = ({report}: UpdateUsersArgs) => {
 export const correctUsers = ({report}: UpdateUsersArgs) => {
     wrapper(report, (key: PlanName) => {
         const plan = plans.find((p) => p.name === key);
-        if (!plan || !plan.sourceOfUserAqcusition) {
+        if (!plan) {
             return;
         }
 
+        const churn = Math.floor(report[key].users * plan.churnRate);
+        report[key].users -= churn;
+        
+        if (!plan.sourceOfUserAqcusition) {
+            return;
+        }
         report[plan.sourceOfUserAqcusition].users -= report[key].usersDiff;
     });
 };

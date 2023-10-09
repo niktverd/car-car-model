@@ -3,8 +3,8 @@ import { ProductName } from "./product";
 export enum PlanName {
     Free = 'free',
     Basic = 'basic',
+    Ultra = 'ultra',
     Total = 'total',
-    // Team = 'team',
 };
 
 export type Plan = {
@@ -14,7 +14,7 @@ export type Plan = {
     cac: number;
     minimalGrowthCount: number;
     growthRate: number;
-    initialCount: number;
+    churnRate: number;
     sourceOfUserAqcusition: PlanName | null;
     availableProducts: ProductName[];
 }
@@ -26,9 +26,9 @@ export const initialPlan: Plan = {
     cac: 8,
     minimalGrowthCount: 100,
     growthRate: 0.15,
-    initialCount: 0,
     subscription: 0,
-    availableProducts: [ProductName.FreeUserGood],
+    churnRate: 0.07,
+    availableProducts: [ProductName.FreeUserGood, ProductName.BasicConsultation],
 };
 
 export const plans: Plan[] = [
@@ -43,6 +43,18 @@ export const plans: Plan[] = [
         minimalGrowthCount: 20,
         growthRate: 0.02,
         subscription: 10,
-        availableProducts: [ProductName.Subscription, ProductName.BasicUserGood],
+        churnRate: 0.1,
+        availableProducts: [ProductName.BasicSubscription, ProductName.BasicUserGood, ProductName.BasicConsultation],
+    },
+    {
+        ...initialPlan,
+        name: PlanName.Ultra,
+        sourceOfUserAqcusition: PlanName.Basic,
+        cac: 10,
+        minimalGrowthCount: 20,
+        growthRate: 0.02,
+        subscription: 10,
+        churnRate: 0.1,
+        availableProducts: [ProductName.UltraSubscription, ProductName.UltraUserGood, ProductName.UltraConsultation],
     },
 ];
